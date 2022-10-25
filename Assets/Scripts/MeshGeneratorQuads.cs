@@ -64,14 +64,14 @@ public class MeshGeneratorQuads : MonoBehaviour {
 		Vector3[] vertices = new Vector3[8];
 		#region Vertices
 		vertices[0] = new Vector3(-halfSize.x, -halfSize.y, -halfSize.z);
-        vertices[1] = new Vector3(halfSize.x, -halfSize.y, -halfSize.z);
-        vertices[2] = new Vector3(halfSize.x, -halfSize.y, halfSize.z);
-        vertices[3] = new Vector3(-halfSize.x, -halfSize.y, halfSize.z);
-        vertices[4] = new Vector3(-halfSize.x, halfSize.y, -halfSize.z);
-        vertices[5] = new Vector3(halfSize.x, halfSize.y, -halfSize.z);
-        vertices[6] = new Vector3(halfSize.x, halfSize.y, halfSize.z);
-        vertices[7] = new Vector3(-halfSize.x, halfSize.y, halfSize.z);
-        #endregion
+		vertices[1] = new Vector3(halfSize.x, -halfSize.y, -halfSize.z);
+		vertices[2] = new Vector3(halfSize.x, -halfSize.y, halfSize.z);
+		vertices[3] = new Vector3(-halfSize.x, -halfSize.y, halfSize.z);
+		vertices[4] = new Vector3(-halfSize.x, halfSize.y, -halfSize.z);
+		vertices[5] = new Vector3(halfSize.x, halfSize.y, -halfSize.z);
+		vertices[6] = new Vector3(halfSize.x, halfSize.y, halfSize.z);
+		vertices[7] = new Vector3(-halfSize.x, halfSize.y, halfSize.z);
+		#endregion
 		mesh.vertices = vertices;
 
 		int[] quads = new int[6 * 4];
@@ -220,99 +220,99 @@ public class MeshGeneratorQuads : MonoBehaviour {
 	#region Unused
 
 	private Mesh CreateStrip(int n, Vector3 size) {
-    	Mesh mesh = new Mesh();
-    	mesh.name = "strip";
+		Mesh mesh = new Mesh();
+		mesh.name = "strip";
 
-    	Vector3[] vertices = new Vector3[(n + 1) * 2];
-    	float x = -size.x;
-    	float dx = 2 * size.x / n;
-    	for (int i = 0; i <= n; i++) {
-    		vertices[i] = new Vector3(x, 0, size.z);
-    		vertices[n + 1 + i] = new Vector3(x, 0, -size.z);
-    		x += dx;
-    	}
-    	mesh.vertices = vertices;
+		Vector3[] vertices = new Vector3[(n + 1) * 2];
+		float x = -size.x;
+		float dx = 2 * size.x / n;
+		for (int i = 0; i <= n; i++) {
+			vertices[i] = new Vector3(x, 0, size.z);
+			vertices[n + 1 + i] = new Vector3(x, 0, -size.z);
+			x += dx;
+		}
+		mesh.vertices = vertices;
 
-    	int[] quads = new int[n * 4];
-    	for (int i = 0; i < n; i++) {
-    		int offset = i * 4;
-    		quads[offset] = i;
-    		quads[offset + 1] = i + 1;
-    		quads[offset + 2] = n + 1 + i + 1;
-    		quads[offset + 3] = n + 1 + i;
-    	}
-    	mesh.SetIndices(quads, MeshTopology.Quads, 0);
+		int[] quads = new int[n * 4];
+		for (int i = 0; i < n; i++) {
+			int offset = i * 4;
+			quads[offset] = i;
+			quads[offset + 1] = i + 1;
+			quads[offset + 2] = n + 1 + i + 1;
+			quads[offset + 3] = n + 1 + i;
+		}
+		mesh.SetIndices(quads, MeshTopology.Quads, 0);
 
-    	return mesh;
-    }
+		return mesh;
+	}
 
-    private Mesh CreateGrid(int nX, int nZ, Vector3 size) {
-    	Mesh mesh = new Mesh();
-    	mesh.name = "grid";
+	private Mesh CreateGrid(int nX, int nZ, Vector3 size) {
+		Mesh mesh = new Mesh();
+		mesh.name = "grid";
 
-    	Func<int, int, int> index = (i, j) => i * (nZ + 1) + j;
+		Func<int, int, int> index = (i, j) => i * (nZ + 1) + j;
 
-    	Vector3[] vertices = new Vector3[(nX + 1) * (nZ + 1)];
-    	float dx = 2 * size.x / nX;
-    	float dz = 2 * size.z / nZ;
-    	float x = -size.x;
-    	for (int i = 0; i <= nX; i++) {
-    		float z = -size.z;
-    		for (int j = 0; j <= nZ; j++) {
-    			vertices[index(i, j)] = new Vector3(x, 0, z);
-    			z += dz;
-    		}
-    		x += dx;
-    	}
-    	mesh.vertices = vertices;
+		Vector3[] vertices = new Vector3[(nX + 1) * (nZ + 1)];
+		float dx = 2 * size.x / nX;
+		float dz = 2 * size.z / nZ;
+		float x = -size.x;
+		for (int i = 0; i <= nX; i++) {
+			float z = -size.z;
+			for (int j = 0; j <= nZ; j++) {
+				vertices[index(i, j)] = new Vector3(x, 0, z);
+				z += dz;
+			}
+			x += dx;
+		}
+		mesh.vertices = vertices;
 
-    	int[] quads = new int[nX * nZ * 4];
-    	for (int i = 0; i < nX; i++) {
-    		for (int j = 0; j < nZ; j++) {
-    			int offset = (i * nZ + j) * 4;
-    			quads[offset] = index(i, j);
-    			quads[offset + 1] = index(i, j + 1);
-    			quads[offset + 2] = index(i + 1, j + 1);
-    			quads[offset + 3] = index(i + 1, j);
-    		}
-    	}
-    	mesh.SetIndices(quads, MeshTopology.Quads, 0);
+		int[] quads = new int[nX * nZ * 4];
+		for (int i = 0; i < nX; i++) {
+			for (int j = 0; j < nZ; j++) {
+				int offset = (i * nZ + j) * 4;
+				quads[offset] = index(i, j);
+				quads[offset + 1] = index(i, j + 1);
+				quads[offset + 2] = index(i + 1, j + 1);
+				quads[offset + 3] = index(i + 1, j);
+			}
+		}
+		mesh.SetIndices(quads, MeshTopology.Quads, 0);
 
-    	return mesh;
-    }
+		return mesh;
+	}
 
-    private delegate Vector3 ComputePosDelegate(float x, float z);
+	private delegate Vector3 ComputePosDelegate(float x, float z);
 
-    private Mesh CreateNormalizedGrid(int nX, int nZ, ComputePosDelegate computePos = null) {
-    	Mesh mesh = new Mesh();
-    	mesh.name = "normalizedGrid";
+	private Mesh CreateNormalizedGrid(int nX, int nZ, ComputePosDelegate computePos = null) {
+		Mesh mesh = new Mesh();
+		mesh.name = "normalizedGrid";
 
-    	Func<int, int, int> index = (i, j) => i * (nZ + 1) + j;
+		Func<int, int, int> index = (i, j) => i * (nZ + 1) + j;
 
-    	Vector3[] vertices = new Vector3[(nX + 1) * (nZ + 1)];
-    	for (int i = 0; i <= nX; i++) {
-    		float x = i / (float) nX;
-    		for (int j = 0; j <= nZ; j++) {
-    			float z = j / (float) nZ;
-    			vertices[index(i, j)] = computePos == null ? new Vector3(x, 0, z) : computePos(x, z);
-    		}
-    	}
-    	mesh.vertices = vertices;
+		Vector3[] vertices = new Vector3[(nX + 1) * (nZ + 1)];
+		for (int i = 0; i <= nX; i++) {
+			float x = i / (float) nX;
+			for (int j = 0; j <= nZ; j++) {
+				float z = j / (float) nZ;
+				vertices[index(i, j)] = computePos == null ? new Vector3(x, 0, z) : computePos(x, z);
+			}
+		}
+		mesh.vertices = vertices;
 
-    	int[] quads = new int[nX * nZ * 4];
-    	for (int i = 0; i < nX; i++) {
-    		for (int j = 0; j < nZ; j++) {
-    			int offset = (i * nZ + j) * 4;
-    			quads[offset] = index(i, j);
-    			quads[offset + 1] = index(i, j + 1);
-    			quads[offset + 2] = index(i + 1, j + 1);
-    			quads[offset + 3] = index(i + 1, j);
-    		}
-    	}
-    	mesh.SetIndices(quads, MeshTopology.Quads, 0);
+		int[] quads = new int[nX * nZ * 4];
+		for (int i = 0; i < nX; i++) {
+			for (int j = 0; j < nZ; j++) {
+				int offset = (i * nZ + j) * 4;
+				quads[offset] = index(i, j);
+				quads[offset + 1] = index(i, j + 1);
+				quads[offset + 2] = index(i + 1, j + 1);
+				quads[offset + 3] = index(i + 1, j);
+			}
+		}
+		mesh.SetIndices(quads, MeshTopology.Quads, 0);
 
-    	return mesh;
-    }
+		return mesh;
+	}
 
 	#endregion
 

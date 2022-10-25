@@ -93,22 +93,22 @@ namespace WingedEdge {
 						// until there is no edge, so we reach the end of the
 						// mesh using the opposite motion (because all inner
 						// relationships are defined)
-                        while (matchingStartCCW.GetStartCWEdge(edge.startVertex))
-	                        matchingStartCCW = matchingStartCCW.GetStartCWEdge(edge.startVertex);
-                        // Finally, we can register the outer relationship between
-                        // the current edge and the matching edge found.
-                        // We are the start clockwise edge of our start
-                        // counterclockwise edge
-                        edge.startCCWEdge = matchingStartCCW;
-                        matchingStartCCW.SetStartCWEdge(edge.startVertex, edge);
+						while (matchingStartCCW.GetStartCWEdge(edge.startVertex))
+							matchingStartCCW = matchingStartCCW.GetStartCWEdge(edge.startVertex);
+						// Finally, we can register the outer relationship between
+						// the current edge and the matching edge found.
+						// We are the start clockwise edge of our start
+						// counterclockwise edge
+						edge.startCCWEdge = matchingStartCCW;
+						matchingStartCCW.SetStartCWEdge(edge.startVertex, edge);
 					}
 					// The process here is the same as above, but with different edges
 					if (!edge.endCWEdge) {
 						WingedEdge matchingEndCW = edge;
-                        while (matchingEndCW.GetEndCCWEdge(edge.endVertex))
-                        	matchingEndCW = matchingEndCW.GetEndCCWEdge(edge.endVertex);
-                        edge.endCWEdge = matchingEndCW;
-                        matchingEndCW.SetEndCCWEdge(edge.endVertex, edge);
+						while (matchingEndCW.GetEndCCWEdge(edge.endVertex))
+							matchingEndCW = matchingEndCW.GetEndCCWEdge(edge.endVertex);
+						edge.endCWEdge = matchingEndCW;
+						matchingEndCW.SetEndCCWEdge(edge.endVertex, edge);
 					}
 				}
 
@@ -118,18 +118,18 @@ namespace WingedEdge {
 					// The process here is the same as above, but with different edges
 					if (!edge.startCWEdge) {
 						WingedEdge matchingStartCW = edge;
-                        while (matchingStartCW.GetStartCCWEdge(edge.startVertex))
-                        	matchingStartCW = matchingStartCW.GetStartCCWEdge(edge.startVertex);
-                        edge.startCWEdge = matchingStartCW;
-                        matchingStartCW.SetStartCCWEdge(edge.startVertex, edge);
+						while (matchingStartCW.GetStartCCWEdge(edge.startVertex))
+							matchingStartCW = matchingStartCW.GetStartCCWEdge(edge.startVertex);
+						edge.startCWEdge = matchingStartCW;
+						matchingStartCW.SetStartCCWEdge(edge.startVertex, edge);
 					}
 					// The process here is the same as above, but with different edges
 					if (!edge.endCCWEdge) {
 						WingedEdge matchingEndCCW = edge;
-                        while (matchingEndCCW.GetEndCWEdge(edge.endVertex))
-                        	matchingEndCCW = matchingEndCCW.GetEndCWEdge(edge.endVertex);
-                        edge.endCCWEdge = matchingEndCCW;
-                        matchingEndCCW.SetEndCWEdge(edge.endVertex, edge);
+						while (matchingEndCCW.GetEndCWEdge(edge.endVertex))
+							matchingEndCCW = matchingEndCCW.GetEndCWEdge(edge.endVertex);
+						edge.endCCWEdge = matchingEndCCW;
+						matchingEndCCW.SetEndCWEdge(edge.endVertex, edge);
 					}
 				}
 			}
