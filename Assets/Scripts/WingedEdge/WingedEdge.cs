@@ -89,5 +89,9 @@
 		public static ulong ComputeUID(int a, int b) => a > b ? _ComputeUID(a, b) : _ComputeUID(b, a);
 
 		private static ulong _ComputeUID(int max, int min) => ((ulong) max) << 32 | (uint) min;
+
+		public static implicit operator bool(WingedEdge obj) {
+			return !ReferenceEquals(null, obj);
+		}
 	}
 }

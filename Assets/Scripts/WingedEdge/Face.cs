@@ -33,5 +33,9 @@
 		public static bool operator!=(Face a, Face b) {
 			return !(a == b);
 		}
+
+		public static implicit operator bool(Face obj) {
+			return !ReferenceEquals(null, obj);
+		}
 	}
 }

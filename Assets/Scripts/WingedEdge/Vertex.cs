@@ -40,5 +40,9 @@ namespace WingedEdge {
 		public static bool operator!=(Vertex a, Vertex b) {
 			return !(a == b);
 		}
+
+		public static implicit operator bool(Vertex obj) {
+			return !ReferenceEquals(null, obj);
+		}
 	}
 }
