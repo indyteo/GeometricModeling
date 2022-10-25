@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using WingedEdge;
 
 [RequireComponent(typeof(MeshFilter))]
 public class MeshGeneratorQuads : MonoBehaviour {
@@ -30,15 +31,30 @@ public class MeshGeneratorQuads : MonoBehaviour {
 		//	float rho = 5 + 0.25f * Mathf.Cos(x * 2 * Mathf.PI * 8) * Mathf.Sin(z * 2 * Mathf.PI * 4);
 		//	return new Vector3(rho * Mathf.Cos(theta) * Mathf.Sin(phi), rho * Mathf.Cos(phi), rho * Mathf.Sin(theta) * Mathf.Sin(phi));
 		//});
-		this.mf.mesh = this.CreateNormalizedGrid(6 * 100 / 5, 50 / 5, (x, z) => {
-			float R = 5, r = 1;
-			float theta = 6 * 2 * Mathf.PI * x;
-			float alpha = 2 * Mathf.PI * z;
-			Vector3 omega = new Vector3(R * Mathf.Cos(theta), 0, R * Mathf.Sin(theta));
-			Vector3 omegaP = r * Mathf.Cos(alpha) * omega.normalized + r * Mathf.Sin(alpha) * Vector3.up + Vector3.up * x * 2 * r * 6;
-			return omega + omegaP;
-		});
+		//this.mf.mesh = this.CreateNormalizedGrid(6 * 100 / 5, 50 / 5, (x, z) => {
+		//	float R = 5, r = 1;
+		//	float theta = 6 * 2 * Mathf.PI * x;
+		//	float alpha = 2 * Mathf.PI * z;
+		//	Vector3 omega = new Vector3(R * Mathf.Cos(theta), 0, R * Mathf.Sin(theta));
+		//	Vector3 omegaP = r * Mathf.Cos(alpha) * omega.normalized + r * Mathf.Sin(alpha) * Vector3.up + Vector3.up * x * 2 * r * 6;
+		//	return omega + omegaP;
+		//});
 		//this.mf.mesh = this.CreatePacman(new Vector3(2, 0, 2), 20);
+		//this.CreateBox(new Vector3(1, 2, 3));
+		this.mf.mesh = new WingedEdgeMesh(this.CreatePacman(new Vector3(2, 0, 2), 20)).ConvertToFaceVertexMesh();
+		//WingedEdgeMesh mesh = new WingedEdgeMesh(this.CreateBox(new Vector3(1, 2, 3)));
+		//foreach (WingedEdge.WingedEdge edge in mesh.edges) {
+		//	Debug.Log("=========================");
+		//	Debug.Log("index: " + edge.index);
+		//	Debug.Log("startVertex: " + edge.startVertex);
+		//	Debug.Log("endVertex: " + edge.endVertex);
+		//	Debug.Log("leftFace: " + edge.leftFace);
+		//	Debug.Log("rightFace: " + edge.rightFace);
+		//	Debug.Log("startCWEdge: " + edge.startCWEdge);
+		//	Debug.Log("startCCWEdge: " + edge.startCCWEdge);
+		//	Debug.Log("endCWEdge: " + edge.endCWEdge);
+		//	Debug.Log("endCCWEdge: " + edge.endCCWEdge);
+		//}
 	}
 
 	private Mesh CreateBox(Vector3 halfSize) {
