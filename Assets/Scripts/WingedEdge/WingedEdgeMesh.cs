@@ -167,27 +167,46 @@ namespace WingedEdge {
 		}
 
 		public Mesh ConvertToFaceVertexMesh() {
-			// TODO Add comments to explain algorithm
+			// Standard mesh object is composed of all the vertices
+			// and faces (with their vertices in the clockwise order)
 			Mesh faceVertexMesh = new Mesh();
+
+			// The vertices only contains their position
 			Vector3[] vfVertices = new Vector3[this.vertices.Count];
 			foreach (Vertex vertex in this.vertices)
 				vfVertices[vertex.index] = vertex.position;
 			faceVertexMesh.vertices = vfVertices;
 
+			// The faces are just the list of vertices' index
 			int[] vfFaces = new int[this.faces.Count * this.cardinality];
 			int index = 0;
 			foreach (Face face in this.faces) {
+				// We only know one edge of the face
 				WingedEdge edge = face.edge;
-				Vertex start = edge.GetVertex(face == edge.leftFace);
-				vfFaces[index++] = start.index;
-				Vertex vertex = start, other;
-				while ((other = edge.GetOtherVertex(vertex)) != start) {
-					vfFaces[index++] = other.index;
-					edge = edge.GetEndEdge(other, face == edge.GetRightFace(vertex));
-					vertex = other;
+				// Remember: The edges are processed in the clockwise motion.
+				// So we should be the right face of the edge. If not, this
+				// means the edge is flipped, and we sould start at the end
+				Vertex first = edge.GetVertex(face == edge.leftFace);
+				// We can record the index of the first vertex of the face
+				vfFaces[index++] = first.index;
+
+				Vertex start = first, end;
+				// We use the other vertex of the edge as our end, and we loop
+				// until we reach the first (complete rotation around the face).
+				// Notice the "edge" variable is modified inside the loop
+				while ((end = edge.GetOtherVertex(start)) != first) {
+					// We record the next vertex of our face
+					vfFaces[index++] = end.index;
+					// And get the next edge by rotating around the end vertex,
+					// in counterclockwise motion
+					edge = edge.GetEndCCWEdge(end);
+					start = end;
 				}
 			}
+			// We use the topology of the original mesh (triangles, quads, ...)
 			faceVertexMesh.SetIndices(vfFaces, this.topology, 0);
+
+			// And we're done!
 			return faceVertexMesh;
 		}
 

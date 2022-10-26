@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using HalfEdge;
 using UnityEditor;
 using UnityEngine;
 using WingedEdge;
@@ -39,22 +40,13 @@ public class MeshGeneratorQuads : MonoBehaviour {
 		//	Vector3 omegaP = r * Mathf.Cos(alpha) * omega.normalized + r * Mathf.Sin(alpha) * Vector3.up + Vector3.up * x * 2 * r * 6;
 		//	return omega + omegaP;
 		//});
-		//this.mf.mesh = this.CreatePacman(new Vector3(2, 0, 2), 20);
-		//this.CreateBox(new Vector3(1, 2, 3));
-		this.mf.mesh = new WingedEdgeMesh(this.CreatePacman(new Vector3(2, 0, 2), 20)).ConvertToFaceVertexMesh();
-		//WingedEdgeMesh mesh = new WingedEdgeMesh(this.CreateBox(new Vector3(1, 2, 3)));
-		//foreach (WingedEdge.WingedEdge edge in mesh.edges) {
-		//	Debug.Log("=========================");
-		//	Debug.Log("index: " + edge.index);
-		//	Debug.Log("startVertex: " + edge.startVertex);
-		//	Debug.Log("endVertex: " + edge.endVertex);
-		//	Debug.Log("leftFace: " + edge.leftFace);
-		//	Debug.Log("rightFace: " + edge.rightFace);
-		//	Debug.Log("startCWEdge: " + edge.startCWEdge);
-		//	Debug.Log("startCCWEdge: " + edge.startCCWEdge);
-		//	Debug.Log("endCWEdge: " + edge.endCWEdge);
-		//	Debug.Log("endCCWEdge: " + edge.endCCWEdge);
-		//}
+		Mesh mesh = this.CreateBox(new Vector3(1, 2, 3));
+		//Mesh mesh = this.CreateChips(new Vector3(1, 2, 3));
+		//Mesh mesh = this.CreateRegularPolygon(new Vector3(2, 0, 2), 20);
+		//Mesh mesh = this.CreatePacman(new Vector3(2, 0, 2), 20);
+		//this.mf.mesh = mesh;
+		this.mf.mesh = new WingedEdgeMesh(mesh).ConvertToFaceVertexMesh();
+		//this.mf.mesh = new HalfEdgeMesh(mesh).ConvertToFaceVertexMesh();
 	}
 
 	private Mesh CreateBox(Vector3 halfSize) {

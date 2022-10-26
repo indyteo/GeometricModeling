@@ -7,13 +7,9 @@
 			this.index = index;
 		}
 
-		public override string ToString() {
-			return "F" + this.index.ToString();
-		}
+		public override string ToString() => "F" + this.index.ToString();
 
-		protected bool Equals(Face other) {
-			return !ReferenceEquals(null, other) && this.index == other.index;
-		}
+		protected bool Equals(Face other) => !ReferenceEquals(null, other) && this.index == other.index;
 
 		public override bool Equals(object obj) {
 			if (ReferenceEquals(null, obj)) return false;
@@ -22,20 +18,12 @@
 			return this.Equals((Face) obj);
 		}
 
-		public override int GetHashCode() {
-			return this.index;
-		}
+		public override int GetHashCode() => this.index;
 
-		public static bool operator==(Face a, Face b) {
-			return ReferenceEquals(null, a) ? ReferenceEquals(null, b) : a.Equals(b);
-		}
+		public static bool operator==(Face a, Face b) => ReferenceEquals(null, a) ? ReferenceEquals(null, b) : a.Equals(b);
 
-		public static bool operator!=(Face a, Face b) {
-			return !(a == b);
-		}
+		public static bool operator!=(Face a, Face b) => !(a == b);
 
-		public static implicit operator bool(Face obj) {
-			return !ReferenceEquals(null, obj);
-		}
+		public static implicit operator bool(Face obj) => !ReferenceEquals(null, obj);
 	}
 }

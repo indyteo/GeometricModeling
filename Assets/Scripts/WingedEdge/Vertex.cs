@@ -14,13 +14,9 @@ namespace WingedEdge {
 			this.position = position;
 		}
 
-		public override string ToString() {
-			return "V" + this.index.ToString();
-		}
+		public override string ToString() => "V" + this.index.ToString();
 
-		protected bool Equals(Vertex other) {
-			return !ReferenceEquals(null, other) && this.index == other.index;
-		}
+		protected bool Equals(Vertex other) => !ReferenceEquals(null, other) && this.index == other.index;
 
 		public override bool Equals(object obj) {
 			if (ReferenceEquals(null, obj)) return false;
@@ -29,20 +25,12 @@ namespace WingedEdge {
 			return this.Equals((Vertex) obj);
 		}
 
-		public override int GetHashCode() {
-			return this.index;
-		}
+		public override int GetHashCode() => this.index;
 
-		public static bool operator==(Vertex a, Vertex b) {
-			return ReferenceEquals(null, a) ? ReferenceEquals(null, b) : a.Equals(b);
-		}
+		public static bool operator==(Vertex a, Vertex b) => ReferenceEquals(null, a) ? ReferenceEquals(null, b) : a.Equals(b);
 
-		public static bool operator!=(Vertex a, Vertex b) {
-			return !(a == b);
-		}
+		public static bool operator!=(Vertex a, Vertex b) => !(a == b);
 
-		public static implicit operator bool(Vertex obj) {
-			return !ReferenceEquals(null, obj);
-		}
+		public static implicit operator bool(Vertex obj) => !ReferenceEquals(null, obj);
 	}
 }

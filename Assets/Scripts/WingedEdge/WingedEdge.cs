@@ -31,13 +31,9 @@
 
 		public WingedEdge GetStartCCWEdge(Vertex expectedStart) => expectedStart == this.startVertex ? this.startCCWEdge : this.endCCWEdge;
 
-		public WingedEdge GetStartEdge(Vertex expectedStart, bool counter = false) => counter ? this.GetStartCCWEdge(expectedStart) : this.GetStartCWEdge(expectedStart);
-
 		public WingedEdge GetEndCWEdge(Vertex expectedEnd) => expectedEnd == this.endVertex ? this.endCWEdge : this.startCWEdge;
 
 		public WingedEdge GetEndCCWEdge(Vertex expectedEnd) => expectedEnd == this.endVertex ? this.endCCWEdge : this.startCCWEdge;
-
-		public WingedEdge GetEndEdge(Vertex expectedEnd, bool counter = false) => counter ? this.GetEndCCWEdge(expectedEnd) : this.GetEndCWEdge(expectedEnd);
 
 		public void SetStartCWEdge(Vertex expectedStart, WingedEdge edge) {
 			if (expectedStart == this.startVertex)
@@ -67,11 +63,11 @@
 				this.startCCWEdge = edge;
 		}
 
-		public Face GetLeftFace(Vertex vertex) => this.GetFace(vertex);
+		public Face GetLeftFace(Vertex expectedStart) => this.GetFace(expectedStart);
 
-		public Face GetRightFace(Vertex vertex) => this.GetFace(vertex, true);
+		public Face GetRightFace(Vertex expectedStart) => this.GetFace(expectedStart, true);
 
-		public Face GetFace(Vertex vertex, bool right = false) => vertex == this.startVertex ^ right ? this.leftFace : this.rightFace;
+		public Face GetFace(Vertex expectedStart, bool right = false) => expectedStart == this.startVertex ^ right ? this.leftFace : this.rightFace;
 
 		public void SetRightFace(Vertex expectedStart, Face face) {
 			if (expectedStart == this.startVertex)
@@ -80,9 +76,7 @@
 				this.leftFace = face;
 		}
 
-		public override string ToString() {
-			return "E" + this.index.ToString();
-		}
+		public override string ToString() => "E" + this.index.ToString();
 
 		public static ulong ComputeUID(Vertex a, Vertex b) => ComputeUID(a.index, b.index);
 
@@ -90,8 +84,6 @@
 
 		private static ulong _ComputeUID(int max, int min) => ((ulong) max) << 32 | (uint) min;
 
-		public static implicit operator bool(WingedEdge obj) {
-			return !ReferenceEquals(null, obj);
-		}
+		public static implicit operator bool(WingedEdge obj) => !ReferenceEquals(null, obj);
 	}
 }
