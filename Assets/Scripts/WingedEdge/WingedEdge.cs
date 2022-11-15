@@ -1,4 +1,6 @@
-﻿namespace WingedEdge {
+﻿using JetBrains.Annotations;
+
+namespace WingedEdge {
 	public class WingedEdge {
 		public readonly int index;
 		public Vertex startVertex;
@@ -84,6 +86,7 @@
 
 		private static ulong _ComputeUID(int max, int min) => ((ulong) max) << 32 | (uint) min;
 
+		[ContractAnnotation("null => false; notnull => true")]
 		public static implicit operator bool(WingedEdge obj) => !ReferenceEquals(null, obj);
 	}
 }

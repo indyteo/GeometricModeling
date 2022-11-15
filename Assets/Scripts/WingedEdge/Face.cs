@@ -1,4 +1,6 @@
-﻿namespace WingedEdge {
+﻿using JetBrains.Annotations;
+
+namespace WingedEdge {
 	public class Face {
 		public readonly int index;
 		public WingedEdge edge;
@@ -24,6 +26,7 @@
 
 		public static bool operator!=(Face a, Face b) => !(a == b);
 
+		[ContractAnnotation("null => false; notnull => true")]
 		public static implicit operator bool(Face obj) => !ReferenceEquals(null, obj);
 	}
 }

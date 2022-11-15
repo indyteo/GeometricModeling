@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using JetBrains.Annotations;
+using UnityEngine;
 
 namespace WingedEdge {
 	public class Vertex {
@@ -31,6 +32,7 @@ namespace WingedEdge {
 
 		public static bool operator!=(Vertex a, Vertex b) => !(a == b);
 
+		[ContractAnnotation("null => false; notnull => true")]
 		public static implicit operator bool(Vertex obj) => !ReferenceEquals(null, obj);
 	}
 }

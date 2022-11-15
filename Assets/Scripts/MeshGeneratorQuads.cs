@@ -4,6 +4,11 @@ using HalfEdge;
 using UnityEditor;
 using UnityEngine;
 using WingedEdge;
+using Unity.Mathematics;
+using UnityEngine.Rendering;
+using static Unity.Mathematics.math;
+using float3 = Unity.Mathematics.float3;
+using int3 = Unity.Mathematics.int3;
 
 [RequireComponent(typeof(MeshFilter))]
 public class MeshGeneratorQuads : MonoBehaviour {
@@ -40,13 +45,22 @@ public class MeshGeneratorQuads : MonoBehaviour {
 		//	Vector3 omegaP = r * Mathf.Cos(alpha) * omega.normalized + r * Mathf.Sin(alpha) * Vector3.up + Vector3.up * x * 2 * r * 6;
 		//	return omega + omegaP;
 		//});
-		Mesh mesh = this.CreateBox(new Vector3(1, 2, 3));
-		//Mesh mesh = this.CreateChips(new Vector3(1, 2, 3));
-		//Mesh mesh = this.CreateRegularPolygon(new Vector3(2, 0, 2), 20);
-		//Mesh mesh = this.CreatePacman(new Vector3(2, 0, 2), 20);
-		//this.mf.mesh = mesh;
+		// Mesh mesh = this.CreateBox(new Vector3(1, 2, 3));
+		Mesh mesh = this.CreateChips(new Vector3(1, 2, 3));
+		// Mesh mesh = this.CreateRegularPolygon(new Vector3(2, 0, 2), 20);
+		// Mesh mesh = this.CreatePacman(new Vector3(2, 0, 2), 20);
+		// this.mf.mesh = mesh;
 		this.mf.mesh = new WingedEdgeMesh(mesh).ConvertToFaceVertexMesh();
-		//this.mf.mesh = new HalfEdgeMesh(mesh).ConvertToFaceVertexMesh();
+		// this.mf.mesh = new HalfEdgeMesh(mesh).ConvertToFaceVertexMesh();
+
+		//int3 nCells = int3(2, 3, 1);
+		//int3 nSegmentsPerCell = int3(50, 50, 1);
+		//float3 cellSize = float3(2, .5f, 1);
+		//this.mf.mesh = this.CreateNormalizedGridSIMD(nCells * nSegmentsPerCell, (k) => {
+		//	float3 cellOriginPos = floor(k * nCells).xzy * cellSize;
+		//	k = frac(k * nCells);
+		//	return cellOriginPos + cellSize * float3(k.x, smoothstep(0.2f - 0.05f, 0.2f + 0.05f, k.x * k.y), k.y);
+		//});
 	}
 
 	private Mesh CreateBox(Vector3 halfSize) {
@@ -295,6 +309,40 @@ public class MeshGeneratorQuads : MonoBehaviour {
 		for (int i = 0; i < nX; i++) {
 			for (int j = 0; j < nZ; j++) {
 				int offset = (i * nZ + j) * 4;
+				quads[offset] = index(i, j);
+				quads[offset + 1] = index(i, j + 1);
+				quads[offset + 2] = index(i + 1, j + 1);
+				quads[offset + 3] = index(i + 1, j);
+			}
+		}
+		mesh.SetIndices(quads, MeshTopology.Quads, 0);
+
+		return mesh;
+	}
+
+	private delegate float3 ComputePosDelegateSIMD(float3 k);
+
+	private Mesh CreateNormalizedGridSIMD(int3 n, ComputePosDelegateSIMD computePos = null) {
+		Mesh mesh = new Mesh();
+		mesh.name = "normalizedGrid";
+		mesh.indexFormat = IndexFormat.UInt32;
+
+		Func<int, int, int> index = (i, j) => i * (n.y + 1) + j;
+
+		Vector3[] vertices = new Vector3[(n.x + 1) * (n.y + 1)];
+		for (int i = 0; i <= n.x; i++) {
+			for (int j = 0; j <= n.y; j++) {
+				float3 k = float3(i, j, 0) / n;
+				vertices[index(i, j)] = computePos == null ? k : computePos(k);
+			}
+		}
+		mesh.vertices = vertices;
+
+		int[] quads = new int[n.x * n.y * 4];
+		// TODO Optimize
+		for (int i = 0; i < n.x; i++) {
+			for (int j = 0; j < n.y; j++) {
+				int offset = (i * n.y + j) * 4;
 				quads[offset] = index(i, j);
 				quads[offset + 1] = index(i, j + 1);
 				quads[offset + 2] = index(i + 1, j + 1);
