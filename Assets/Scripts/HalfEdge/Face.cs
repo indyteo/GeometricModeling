@@ -28,5 +28,7 @@ namespace HalfEdge {
 
 		[ContractAnnotation("null => false; notnull => true")]
 		public static implicit operator bool(Face obj) => !ReferenceEquals(null, obj);
+
+		public static implicit operator int(Face obj) => obj.index;
 	}
 }

@@ -34,5 +34,9 @@ namespace HalfEdge {
 
 		[ContractAnnotation("null => false; notnull => true")]
 		public static implicit operator bool(Vertex obj) => !ReferenceEquals(null, obj);
+
+		public static implicit operator int(Vertex obj) => obj.index;
+
+		public static implicit operator Vector3(Vertex obj) => obj.position;
 	}
 }

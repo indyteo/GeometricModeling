@@ -20,11 +20,15 @@ namespace HalfEdge {
 			this.face = face;
 		}
 
+		public override string ToString() => "E" + this.index.ToString();
+
 		public static ulong ComputeUID(Vertex start, Vertex end) => ComputeUID(start.index, end.index);
 
 		private static ulong ComputeUID(int start, int end) => ((ulong) start) << 32 | (uint) end;
 
 		[ContractAnnotation("null => false; notnull => true")]
 		public static implicit operator bool(HalfEdge obj) => !ReferenceEquals(null, obj);
+
+		public static implicit operator int(HalfEdge obj) => obj.index;
 	}
 }

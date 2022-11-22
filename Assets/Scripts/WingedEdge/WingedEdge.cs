@@ -88,5 +88,7 @@ namespace WingedEdge {
 
 		[ContractAnnotation("null => false; notnull => true")]
 		public static implicit operator bool(WingedEdge obj) => !ReferenceEquals(null, obj);
+
+		public static implicit operator int(WingedEdge obj) => obj.index;
 	}
 }

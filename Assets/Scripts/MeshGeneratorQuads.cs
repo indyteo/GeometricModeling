@@ -37,21 +37,25 @@ public class MeshGeneratorQuads : MonoBehaviour {
 		//	float rho = 5 + 0.25f * Mathf.Cos(x * 2 * Mathf.PI * 8) * Mathf.Sin(z * 2 * Mathf.PI * 4);
 		//	return new Vector3(rho * Mathf.Cos(theta) * Mathf.Sin(phi), rho * Mathf.Cos(phi), rho * Mathf.Sin(theta) * Mathf.Sin(phi));
 		//});
-		//this.mf.mesh = this.CreateNormalizedGrid(6 * 100 / 5, 50 / 5, (x, z) => {
-		//	float R = 5, r = 1;
-		//	float theta = 6 * 2 * Mathf.PI * x;
-		//	float alpha = 2 * Mathf.PI * z;
-		//	Vector3 omega = new Vector3(R * Mathf.Cos(theta), 0, R * Mathf.Sin(theta));
-		//	Vector3 omegaP = r * Mathf.Cos(alpha) * omega.normalized + r * Mathf.Sin(alpha) * Vector3.up + Vector3.up * x * 2 * r * 6;
-		//	return omega + omegaP;
-		//});
-		// Mesh mesh = this.CreateBox(new Vector3(1, 2, 3));
-		Mesh mesh = this.CreateChips(new Vector3(1, 2, 3));
+		Mesh mesh = this.CreateNormalizedGrid(4 * 10, 4, (x, z) => {
+			float R = 5, r = 1;
+			float theta = 4 * 2 * Mathf.PI * x;
+			float alpha = 2 * Mathf.PI * z;
+			Vector3 omega = new Vector3(R * Mathf.Cos(theta), 0, R * Mathf.Sin(theta));
+			Vector3 omegaP = r * Mathf.Cos(alpha) * omega.normalized + r * Mathf.Sin(alpha) * Vector3.up + Vector3.up * x * 2 * r * 5;
+			return omega + omegaP;
+		});
+		// Mesh mesh = this.CreateBox(new Vector3(3, 3, 3));
+		// Mesh mesh = this.CreateChips(new Vector3(3, 3, 3));
 		// Mesh mesh = this.CreateRegularPolygon(new Vector3(2, 0, 2), 20);
 		// Mesh mesh = this.CreatePacman(new Vector3(2, 0, 2), 20);
 		// this.mf.mesh = mesh;
-		this.mf.mesh = new WingedEdgeMesh(mesh).ConvertToFaceVertexMesh();
-		// this.mf.mesh = new HalfEdgeMesh(mesh).ConvertToFaceVertexMesh();
+		// this.mf.mesh = new WingedEdgeMesh(mesh).ConvertToFaceVertexMesh();
+		HalfEdgeMesh halfEdgeMesh = new HalfEdgeMesh(mesh);
+		halfEdgeMesh.SubdivideCatmullClark();
+		halfEdgeMesh.SubdivideCatmullClark();
+		halfEdgeMesh.SubdivideCatmullClark();
+		this.mf.mesh = halfEdgeMesh.ConvertToFaceVertexMesh();
 
 		//int3 nCells = int3(2, 3, 1);
 		//int3 nSegmentsPerCell = int3(50, 50, 1);
