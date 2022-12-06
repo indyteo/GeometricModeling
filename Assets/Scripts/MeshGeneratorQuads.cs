@@ -37,14 +37,15 @@ public class MeshGeneratorQuads : MonoBehaviour {
 		//	float rho = 5 + 0.25f * Mathf.Cos(x * 2 * Mathf.PI * 8) * Mathf.Sin(z * 2 * Mathf.PI * 4);
 		//	return new Vector3(rho * Mathf.Cos(theta) * Mathf.Sin(phi), rho * Mathf.Cos(phi), rho * Mathf.Sin(theta) * Mathf.Sin(phi));
 		//});
-		Mesh mesh = this.CreateNormalizedGrid(4 * 10, 4, (x, z) => {
-			float R = 5, r = 1;
-			float theta = 4 * 2 * Mathf.PI * x;
-			float alpha = 2 * Mathf.PI * z;
-			Vector3 omega = new Vector3(R * Mathf.Cos(theta), 0, R * Mathf.Sin(theta));
-			Vector3 omegaP = r * Mathf.Cos(alpha) * omega.normalized + r * Mathf.Sin(alpha) * Vector3.up + Vector3.up * x * 2 * r * 5;
-			return omega + omegaP;
-		});
+		//Mesh mesh = this.CreateNormalizedGrid(4 * 10, 4, (x, z) => {
+		//	float R = 5, r = 1;
+		//	float theta = 4 * 2 * Mathf.PI * x;
+		//	float alpha = 2 * Mathf.PI * z;
+		//	Vector3 omega = new Vector3(R * Mathf.Cos(theta), 0, R * Mathf.Sin(theta));
+		//	Vector3 omegaP = r * Mathf.Cos(alpha) * omega.normalized + r * Mathf.Sin(alpha) * Vector3.up + Vector3.up * x * 2 * r * 5;
+		//	return omega + omegaP;
+		//});
+		Mesh mesh = this.CreateCustomMesh();
 		// Mesh mesh = this.CreateBox(new Vector3(3, 3, 3));
 		// Mesh mesh = this.CreateChips(new Vector3(3, 3, 3));
 		// Mesh mesh = this.CreateRegularPolygon(new Vector3(2, 0, 2), 20);
@@ -65,6 +66,143 @@ public class MeshGeneratorQuads : MonoBehaviour {
 		//	k = frac(k * nCells);
 		//	return cellOriginPos + cellSize * float3(k.x, smoothstep(0.2f - 0.05f, 0.2f + 0.05f, k.x * k.y), k.y);
 		//});
+	}
+
+	private Mesh CreateCustomMesh() {
+		Mesh mesh = new Mesh();
+		mesh.name = "custom";
+
+		Vector3[] vertices = new Vector3[20];
+		#region Vertices
+		float baseSize = 3;
+		float stemRadius = 1;
+		float stemHeight = 10;
+		float leavesSize = 5;
+		float baseOffset = baseSize + stemRadius;
+		float leavesHeight = stemHeight + 2 * leavesSize;
+		vertices[0] = new Vector3(-baseOffset, 0, -baseOffset);
+		vertices[1] = new Vector3(baseOffset, 0, -baseOffset);
+		vertices[2] = new Vector3(baseOffset, 0, baseOffset);
+		vertices[3] = new Vector3(-baseOffset, 0, baseOffset);
+
+		vertices[4] = new Vector3(-stemRadius, 0, -stemRadius);
+		vertices[5] = new Vector3(stemRadius, 0, -stemRadius);
+		vertices[6] = new Vector3(stemRadius, 0, stemRadius);
+		vertices[7] = new Vector3(-stemRadius, 0, stemRadius);
+
+		vertices[8] = new Vector3(-stemRadius, stemHeight, -stemRadius);
+		vertices[9] = new Vector3(stemRadius, stemHeight, -stemRadius);
+		vertices[10] = new Vector3(stemRadius, stemHeight, stemRadius);
+		vertices[11] = new Vector3(-stemRadius, stemHeight, stemRadius);
+
+		vertices[12] = new Vector3(-leavesSize, stemHeight, -leavesSize);
+		vertices[13] = new Vector3(leavesSize, stemHeight, -leavesSize);
+		vertices[14] = new Vector3(leavesSize, stemHeight, leavesSize);
+		vertices[15] = new Vector3(-leavesSize, stemHeight, leavesSize);
+
+		vertices[16] = new Vector3(-leavesSize, leavesHeight, -leavesSize);
+		vertices[17] = new Vector3(leavesSize, leavesHeight, -leavesSize);
+		vertices[18] = new Vector3(leavesSize, leavesHeight, leavesSize);
+		vertices[19] = new Vector3(-leavesSize, leavesHeight, leavesSize);
+		#endregion
+		mesh.vertices = vertices;
+
+		int[] quads = new int[17 * 4];
+		#region Quads
+		int index = 0;
+		// Base
+		quads[index++] = 0;
+		quads[index++] = 4;
+		quads[index++] = 5;
+		quads[index++] = 1;
+
+		quads[index++] = 1;
+		quads[index++] = 5;
+		quads[index++] = 6;
+		quads[index++] = 2;
+
+		quads[index++] = 2;
+		quads[index++] = 6;
+		quads[index++] = 7;
+		quads[index++] = 3;
+
+		quads[index++] = 3;
+		quads[index++] = 7;
+		quads[index++] = 4;
+		quads[index++] = 0;
+
+		// Stem
+		quads[index++] = 4;
+		quads[index++] = 8;
+		quads[index++] = 9;
+		quads[index++] = 5;
+
+		quads[index++] = 5;
+		quads[index++] = 9;
+		quads[index++] = 10;
+		quads[index++] = 6;
+
+		quads[index++] = 6;
+		quads[index++] = 10;
+		quads[index++] = 11;
+		quads[index++] = 7;
+
+		quads[index++] = 7;
+		quads[index++] = 11;
+		quads[index++] = 8;
+		quads[index++] = 4;
+
+		// Bottom Leaves
+		quads[index++] = 8;
+		quads[index++] = 12;
+		quads[index++] = 13;
+		quads[index++] = 9;
+
+		quads[index++] = 9;
+		quads[index++] = 13;
+		quads[index++] = 14;
+		quads[index++] = 10;
+
+		quads[index++] = 10;
+		quads[index++] = 14;
+		quads[index++] = 15;
+		quads[index++] = 11;
+
+		quads[index++] = 11;
+		quads[index++] = 15;
+		quads[index++] = 12;
+		quads[index++] = 8;
+
+		// Side Leaves
+		quads[index++] = 12;
+		quads[index++] = 16;
+		quads[index++] = 17;
+		quads[index++] = 13;
+
+		quads[index++] = 13;
+		quads[index++] = 17;
+		quads[index++] = 18;
+		quads[index++] = 14;
+
+		quads[index++] = 14;
+		quads[index++] = 18;
+		quads[index++] = 19;
+		quads[index++] = 15;
+
+		quads[index++] = 15;
+		quads[index++] = 19;
+		quads[index++] = 16;
+		quads[index++] = 12;
+
+		// Top
+		quads[index++] = 16;
+		quads[index++] = 19;
+		quads[index++] = 18;
+		quads[index] = 17;
+		#endregion 
+		mesh.SetIndices(quads, MeshTopology.Quads, 0);
+
+		return mesh;
 	}
 
 	private Mesh CreateBox(Vector3 halfSize) {

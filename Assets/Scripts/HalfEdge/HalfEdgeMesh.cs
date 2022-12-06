@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 namespace HalfEdge {
@@ -255,13 +257,62 @@ namespace HalfEdge {
 		}
 
 		public string ConvertToCSVFormat(string separator = "\t") {
-			string str = "";
-			// TODO Magic happens
-			return str;
+			List<string> lines = new List<string>();
+			foreach (HalfEdge edge in this.edges)
+				lines.Add(string.Join(separator, edge, edge.sourceVertex, edge.face, edge.prevEdge, edge.nextEdge, edge.twinEdge) + separator.Repeat(2));
+
+			for (int i = 0; i < this.vertices.Count; i++) {
+				Vertex vertex = this.vertices[i];
+				lines[i] += string.Join(separator, vertex, vertex.position, vertex.outgoingEdge) + separator.Repeat(2);
+			}
+
+			for (int i = 0; i < this.faces.Count; i++) {
+				Face face = this.faces[i];
+				lines[i] += string.Join(separator, face, face.edge);
+			}
+
+			return "Edges" + separator.Repeat(7) + "Vertex" + separator.Repeat(4) + "Faces" + separator.Repeat(2) + "\n"
+			       + string.Join(separator, "Index", "Source vertex", "Face", "Previous edge", "Next edge", "Twin edge", "", "Index", "Position", "Outgoing edge", "", "Index", "Edge") + "\n"
+			       + string.Join("\n", lines);
 		}
 
-		public void DrawGizmos(bool drawVertices, bool drawEdges, bool drawFaces) {
-			// TODO Magic happens
+		public void DrawGizmos(Func<Vector3, Vector3> transform, bool drawVertices, bool drawEdges, bool drawFaces) {
+			GUIStyle style = new GUIStyle();
+			style.fontSize = 16;
+			style.alignment = TextAnchor.MiddleCenter;
+			style.normal.textColor = Color.red;
+
+			if (drawVertices)
+				foreach (Vertex vertex in this.vertices)
+					Handles.Label(transform(vertex.position), vertex.index.ToString(), style);
+
+			Gizmos.color = Color.black;
+			style.normal.textColor = Color.blue;
+
+			if (drawEdges) {
+				foreach (HalfEdge edge in this.edges) {
+					Gizmos.DrawLine(edge.sourceVertex, edge.nextEdge.sourceVertex);
+					Handles.Label(Vector3.Lerp(transform(edge.sourceVertex), transform(edge.nextEdge.sourceVertex), 0.33f), edge.index.ToString(), style);
+				}
+			}
+
+			style.normal.textColor = Color.green;
+
+			if (drawFaces) {
+				foreach (Face face in this.faces) {
+					string indexes = "";
+					Vector3 positions = Vector3.zero;
+					int n = 0;
+					HalfEdge edge = face.edge;
+					do {
+						indexes += "," + edge.sourceVertex.index;
+						positions += transform(edge.sourceVertex);
+						n++;
+						edge = edge.nextEdge;
+					} while (edge != face.edge);
+					Handles.Label(positions / n, face.index.ToString() + ": " + indexes.Substring(1), style);
+				}
+			}
 		}
 	}
 }

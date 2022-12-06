@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 namespace WingedEdge {
@@ -211,13 +213,65 @@ namespace WingedEdge {
 		}
 
 		public string ConvertToCSVFormat(string separator = "\t") {
-			string str = "";
-			// TODO Magic happens
-			return str;
+			List<string> lines = new List<string>();
+			foreach (WingedEdge edge in this.edges)
+				lines.Add(string.Join(separator, edge, edge.startVertex, edge.endVertex, edge.leftFace, edge.rightFace, edge.startCWEdge, edge.startCCWEdge, edge.endCWEdge, edge.endCCWEdge) + separator.Repeat(2));
+
+			for (int i = 0; i < this.vertices.Count; i++) {
+				Vertex vertex = this.vertices[i];
+				lines[i] += string.Join(separator, vertex, vertex.position, vertex.edge) + separator.Repeat(2);
+			}
+
+			for (int i = 0; i < this.faces.Count; i++) {
+				Face face = this.faces[i];
+				lines[i] += string.Join(separator, face, face.edge);
+			}
+
+			return "Edges" + separator.Repeat(10) + "Vertex" + separator.Repeat(4) + "Faces" + separator.Repeat(2) + "\n"
+			       + string.Join(separator, "Index", "Start vertex", "End vertex", "Left face", "Right face", "Start CW", "Start CCW", "End CW", "End CCW", "", "Index", "Position", "Outgoing edge", "", "Index", "Edge") + "\n"
+			       + string.Join("\n", lines);
 		}
 
-		public void DrawGizmos(bool drawVertices, bool drawEdges, bool drawFaces) {
-			// TODO Magic happens
+		public void DrawGizmos(Func<Vector3, Vector3> transform, bool drawVertices, bool drawEdges, bool drawFaces) {
+			GUIStyle style = new GUIStyle();
+			style.fontSize = 16;
+			style.alignment = TextAnchor.MiddleCenter;
+			style.normal.textColor = Color.red;
+
+			if (drawVertices)
+				foreach (Vertex vertex in this.vertices)
+					Handles.Label(transform(vertex.position), vertex.index.ToString(), style);
+
+			Gizmos.color = Color.black;
+			style.normal.textColor = Color.blue;
+
+			if (drawEdges) {
+				foreach (WingedEdge edge in this.edges) {
+					Gizmos.DrawLine(edge.startVertex, edge.endVertex);
+					Handles.Label(Vector3.Lerp(transform(edge.startVertex), transform(edge.endVertex), 0.5f), edge.index.ToString(), style);
+				}
+			}
+
+			style.normal.textColor = Color.green;
+
+			if (drawFaces) {
+				foreach (Face face in this.faces) {
+					WingedEdge edge = face.edge;
+					Vertex first = edge.GetVertex(face == edge.leftFace);
+					string indexes = first.index.ToString();
+                    Vector3 positions = first;
+                    int n = 1;
+                    Vertex start = first, end;
+					while ((end = edge.GetOtherVertex(start)) != first) {
+						indexes += "," + end.index;
+						positions += transform(end);
+						n++;
+						edge = edge.GetEndCCWEdge(end);
+						start = end;
+					}
+					Handles.Label(positions / n, face.index.ToString() + ": " + indexes, style);
+				}
+			}
 		}
 	}
 }
