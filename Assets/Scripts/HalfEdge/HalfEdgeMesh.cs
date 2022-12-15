@@ -276,7 +276,7 @@ namespace HalfEdge {
 			       + string.Join("\n", lines);
 		}
 
-		public void DrawGizmos(Func<Vector3, Vector3> transform, bool drawVertices, bool drawEdges, bool drawFaces) {
+		public void DrawGizmos(Func<Vector3, Vector3> transform, bool drawVertices, bool drawEdgesLines, bool drawEdgesLabels, bool drawFaces) {
 			GUIStyle style = new GUIStyle();
 			style.fontSize = 16;
 			style.alignment = TextAnchor.MiddleCenter;
@@ -286,13 +286,15 @@ namespace HalfEdge {
 				foreach (Vertex vertex in this.vertices)
 					Handles.Label(transform(vertex.position), vertex.index.ToString(), style);
 
-			Gizmos.color = Color.black;
+			Gizmos.color = new Color(0, 0, 0, 0.5f);
 			style.normal.textColor = Color.blue;
 
-			if (drawEdges) {
+			if (drawEdgesLines || drawEdgesLabels) {
 				foreach (HalfEdge edge in this.edges) {
-					Gizmos.DrawLine(edge.sourceVertex, edge.nextEdge.sourceVertex);
-					Handles.Label(Vector3.Lerp(transform(edge.sourceVertex), transform(edge.nextEdge.sourceVertex), 0.33f), edge.index.ToString(), style);
+					if (drawEdgesLines)
+						Gizmos.DrawLine(transform(edge.sourceVertex), transform(edge.nextEdge.sourceVertex));
+					if (drawEdgesLabels)
+						Handles.Label(Vector3.Lerp(transform(edge.sourceVertex), transform(edge.nextEdge.sourceVertex), 0.33f), edge.index.ToString(), style);
 				}
 			}
 

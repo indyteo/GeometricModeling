@@ -232,7 +232,7 @@ namespace WingedEdge {
 			       + string.Join("\n", lines);
 		}
 
-		public void DrawGizmos(Func<Vector3, Vector3> transform, bool drawVertices, bool drawEdges, bool drawFaces) {
+		public void DrawGizmos(Func<Vector3, Vector3> transform, bool drawVertices, bool drawEdgesLines, bool drawEdgesLabels, bool drawFaces) {
 			GUIStyle style = new GUIStyle();
 			style.fontSize = 16;
 			style.alignment = TextAnchor.MiddleCenter;
@@ -245,10 +245,12 @@ namespace WingedEdge {
 			Gizmos.color = Color.black;
 			style.normal.textColor = Color.blue;
 
-			if (drawEdges) {
+			if (drawEdgesLines || drawEdgesLabels) {
 				foreach (WingedEdge edge in this.edges) {
-					Gizmos.DrawLine(edge.startVertex, edge.endVertex);
-					Handles.Label(Vector3.Lerp(transform(edge.startVertex), transform(edge.endVertex), 0.5f), edge.index.ToString(), style);
+					if (drawEdgesLines)
+						Gizmos.DrawLine(transform(edge.startVertex), transform(edge.endVertex));
+					if (drawEdgesLabels)
+						Handles.Label(Vector3.Lerp(transform(edge.startVertex), transform(edge.endVertex), 0.5f), edge.index.ToString(), style);
 				}
 			}
 
