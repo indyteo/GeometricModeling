@@ -2,6 +2,11 @@
 using UnityEngine;
 
 public static class MeshUtils {
+	/// <summary>
+	/// Create a box with the given dimensions.
+	/// </summary>
+	/// <param name="halfSize">The extensions of the box</param>
+	/// <returns>A mesh representing a box</returns>
 	public static Mesh CreateBox(Vector3 halfSize) {
 		Mesh mesh = new Mesh();
 		mesh.name = "box";
@@ -58,6 +63,11 @@ public static class MeshUtils {
 		return mesh;
 	}
 
+	/// <summary>
+	/// Create a chips with the given dimensions.
+	/// </summary>
+	/// <param name="halfSize">The extensions of the chips</param>
+	/// <returns>A mesh representing a chips</returns>
 	public static Mesh CreateChips(Vector3 halfSize) {
 		Mesh mesh = new Mesh();
 		mesh.name = "chips";
@@ -99,6 +109,12 @@ public static class MeshUtils {
 		return mesh;
 	}
 
+	/// <summary>
+	/// Create a regular polygon with the given dimensions and the given number of sectors.
+	/// </summary>
+	/// <param name="halfSize">The extensions of the regular polygon (Y value will be ignored)</param>
+	/// <param name="nSectors">The number of sectors of the polygon</param>
+	/// <returns>A mesh representing a regular polygon</returns>
 	public static Mesh CreateRegularPolygon(Vector3 halfSize, int nSectors) {
 		Mesh mesh = new Mesh();
 		mesh.name = "regularPolygon";
@@ -130,6 +146,14 @@ public static class MeshUtils {
 		return mesh;
 	}
 
+	/// <summary>
+	/// Create a pacman with the given dimensions, the given number of sectors and the given angular opening.
+	/// </summary>
+	/// <param name="halfSize">The extensions of the pacman (Y value will be ignored)</param>
+	/// <param name="nSectors">The number of sectors of the pacman</param>
+	/// <param name="startAngle">The angle of the begining of the opening</param>
+	/// <param name="endAngle">The angle of the ending of the opening</param>
+	/// <returns>A mesh representing a pacman</returns>
 	public static Mesh CreatePacMan(Vector3 halfSize, int nSectors, float startAngle = Mathf.PI / 3, float endAngle = 5 * Mathf.PI / 3) {
 		Mesh mesh = new Mesh();
 		mesh.name = "pacman";
@@ -162,6 +186,14 @@ public static class MeshUtils {
 		return mesh;
 	}
 
+	/// <summary>
+	/// Create a tree with the given parameters.
+	/// </summary>
+	/// <param name="baseSize">The size of the base plate of the tree</param>
+	/// <param name="stemRadius">The radius of the stem</param>
+	/// <param name="stemHeight">The height of the stem</param>
+	/// <param name="leavesSize">The size of the leaves area</param>
+	/// <returns>A mesh representing a tree</returns>
 	public static Mesh CreateTree(float baseSize = 3, float stemRadius = 1, float stemHeight = 10, float leavesSize = 5) { 
 		Mesh mesh = new Mesh();
 		mesh.name = "custom";
@@ -295,6 +327,16 @@ public static class MeshUtils {
 		return mesh;
 	}
 
+	/// <summary>
+	/// Create an helical tube with the given parameters.
+	/// </summary>
+	/// <param name="helicalPrecision">The number of points of the helical</param>
+	/// <param name="tubePrecision">The number of points of the tube</param>
+	/// <param name="helicalRadius">The radius of the helical</param>
+	/// <param name="tubeRadius">The radius of the tube</param>
+	/// <param name="n">The number of repetitions of the tube</param>
+	/// <param name="extension">The scale factor between the repetitions of the tube</param>
+	/// <returns>A mesh representing an helical tube</returns>
 	public static Mesh CreateHelicalTube(int helicalPrecision = 10, int tubePrecision = 10, float helicalRadius = 5, float tubeRadius = 1, int n = 5, float extension = 1) {
 		return CreateNormalizedGrid(helicalPrecision * n, tubePrecision, (x, z) => {
 			float theta = n * 2 * Mathf.PI * x;
@@ -305,6 +347,12 @@ public static class MeshUtils {
 		});
 	}
 
+	/// <summary>
+	/// Create a strip with the given size and number of bands.
+	/// </summary>
+	/// <param name="n">The number of bands</param>
+	/// <param name="size">The size of the strip (Y value will be ignored)</param>
+	/// <returns>A mesh representing a strip</returns>
 	public static Mesh CreateStrip(int n, Vector3 size) {
 		Mesh mesh = new Mesh();
 		mesh.name = "strip";
@@ -332,6 +380,13 @@ public static class MeshUtils {
 		return mesh;
 	}
 
+	/// <summary>
+	/// Create a grid with the given size and number of cells.
+	/// </summary>
+	/// <param name="nX">The number of cells among the X axis</param>
+	/// <param name="nZ">The number of cells among the Z axis</param>
+	/// <param name="size">The size of the grid (Y value will be ignored)</param>
+	/// <returns>A mesh representing a grid</returns>
 	public static Mesh CreateGrid(int nX, int nZ, Vector3 size) {
 		Mesh mesh = new Mesh();
 		mesh.name = "grid";
@@ -367,8 +422,18 @@ public static class MeshUtils {
 		return mesh;
 	}
 
+	/// <summary>
+	/// Delegate to compute a position on the normalized grid.
+	/// </summary>
 	public delegate Vector3 ComputePosDelegate(float x, float z);
 
+	/// <summary>
+	/// Create a normalized grid with the given number of cells by computing the position of each point using the given delegate.
+	/// </summary>
+	/// <param name="nX">The number of cells among the X axis</param>
+	/// <param name="nZ">The number of cells among the Z axis</param>
+	/// <param name="computePos">The delegate used to compute the position of each point of the grid</param>
+	/// <returns>A mesh representing a normalized grid</returns>
 	public static Mesh CreateNormalizedGrid(int nX, int nZ, ComputePosDelegate computePos = null) {
 		Mesh mesh = new Mesh();
 		mesh.name = "normalizedGrid";
@@ -402,5 +467,5 @@ public static class MeshUtils {
 }
 
 public enum ObjectType {
-	Box, Chips, RegularPolygon, PacMan, Tree, HelicalTube
+	None, Box, Chips, RegularPolygon, PacMan, Tree, HelicalTube
 }

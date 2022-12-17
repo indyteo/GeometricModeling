@@ -6,7 +6,7 @@ using UnityEngine;
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 public class MeshCustomizer : MonoBehaviour {
 	[Header("Object")]
-	[SerializeField] private ObjectType type = ObjectType.Box;
+	[SerializeField] private ObjectType type = ObjectType.None;
 	[SerializeField] [ConditionalField("type", false, ObjectType.Box, ObjectType.Chips, ObjectType.RegularPolygon, ObjectType.PacMan)] private Vector3 halfSize = new Vector3(3, 3, 3);
 	[SerializeField] [ConditionalField("type", false, ObjectType.RegularPolygon, ObjectType.PacMan)] private int nSectors = 6;
 	[SerializeField] [ConditionalField("type", false, ObjectType.PacMan)] private Angle startAngle = new Angle(1, 3);
@@ -47,27 +47,39 @@ public class MeshCustomizer : MonoBehaviour {
 
 	private void Update() {
 		if (this.meshModified && this.mf) {
-			this.mf.mesh = this.mesh.ConvertToFaceVertexMesh();
+			// Update the mesh if modified
+			this.mf.mesh = this.mesh == null ? null : this.mesh.ConvertToFaceVertexMesh();
 			this.meshModified = false;
 		}
 	}
 
 	private void OnValidate() {
+		// Regenerate mesh each time a serialized field was modified in the Unity editor
 		this.GenerateMesh();
 	}
 
 	private void GenerateMesh() {
 		Mesh m = this.GetObject();
-		if (!m)
+		// Can be null if object type "none" is selected
+		if (!m) {
+			this.mesh = null;
+			this.meshModified = true;
 			return;
+		}
 
         this.mesh = new HalfEdgeMesh(m);
+		// Compute CatmullClark subdivisions if enabled
         if (this.enableCatmullClark)
         	for (int i = 0; i < this.subdivisionCount; i++)
         		this.mesh.SubdivideCatmullClark();
+        // Mark the mesh as modified to update the real Unity mesh in the next update
         this.meshModified = true;
 	}
 
+	/// <summary>
+	/// Create the base mesh using the customized properties.
+	/// </summary>
+	/// <returns>The customized mesh, or null if none is selected</returns>
 	private Mesh GetObject() {
 		switch (this.type) {
 			case ObjectType.Box:
@@ -88,14 +100,17 @@ public class MeshCustomizer : MonoBehaviour {
 	}
 
 	private void OnDrawGizmos() {
+		// Show object gizmos if possible
 		if (this.drawGizmos && this.mesh != null && this.transform != null)
 			this.mesh.DrawGizmos(this.transform.TransformPoint, this.drawVertices, this.drawEdgesLines, this.drawEdgesLabels, this.drawFaces);
 	}
 
 	private void OnGUI() {
+		// Display "Copy CSV" button if the object is selected
 		if (this.mesh != null && Selection.activeGameObject == this.gameObject) {
 			GUILayout.BeginArea(new Rect(10, 10, Screen.width - 20, 25));
 			if (GUILayout.Button($"Copy CSV ({this.name})", GUILayout.ExpandWidth(false)))
+				// Copy CSV to clipboard using property systemCopyBuffer
 				GUIUtility.systemCopyBuffer = this.mesh.ConvertToCSVFormat();
 			GUILayout.EndArea();
 		}
