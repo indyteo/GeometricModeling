@@ -1,6 +1,6 @@
 # Geometric Modeling
 
-![GIF démo](TreeCatmullClark.gif)
+![GIF démo](Screenshots/TreeCatmullClark.gif)
 
 
 ## Fonctionnalités développées
