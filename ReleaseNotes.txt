@@ -1,0 +1,58 @@
+# GEOMETRIC MODELING
+
+
+## Fonctionnalités développées
+
+* Classe WingedEdgeMesh
+
+Dépend des classes Vertex, Face et WingedEdge.
+Contient les méthodes ConvetToFaceVertexMesh, ConvertToCSV, DrawGizmos, ainsi que ProcessEdge qui est utilisée dans le constructeur du WingedEdgeMesh. 
+
+* Classe HalfEdgeMesh
+
+Dépend des classes Vertex, Face et HalfEdge.
+Contient les méthodes ConvertToFaceVertexMesh, ConvertToCSV, DrawGizmos.
+Cette classe contient également SubdivideCatmullClark, l'algorithme de subdivision de Catmull Clark et les méthodes dont il dépend : CatmullClarkCreateNewPoints, SplitEdge et SplitFace. 
+
+* Script MeshGeneratorQuads
+
+Fichier "Plan de travail" dans lequel ont été développées plusieurs méthodes de création de mesh de formes différentes pendant les TPs de ce cours. 
+
+* Script MeshCustomizer
+
+Fichier qui permet de customiser dans l'éditeur Unity3D le mesh souhaité pour l'objet courant.
+Les méthodes de créations de mesh sont appelées ici, et utilisent désormais des paramètres définis dans l'éditeur au moment de la construction de la scène (également modifiable au runtime). 
+
+* Classe statique MeshUtils
+
+Contient toutes les méthodes de créations de mesh : CreateBox, CreateChips, CreateRegularPolygon, CreatePacMan, CreateTree, CreateHelicalTube, CreateGrid, CreateStrip, CreateNormalizedGrid. 
+Contient aussi la définition du délégué ComputePosDelegate, ainsi qu'une énumération des mesh pouvant être générés par le meshCustomizer : Box, Chips, Regular Polygon, PacMan, Tree, Helical Tube.
+
+* Classes HalfEdge et WingedEdge
+
+Contiennent les méthodes ComputeUID et ToString. Des opérateurs implicites ont été redéfinis qui permettent d'interpréter n'importe quel objet comme son index ou de savoir si l'objet est null ou non. Ces méthodes permettent de simplifier la syntaxe du code quand on associe des valeurs à leur index.
+De plus, la classe WingedEdge contient beaucoup de méthodes utilitaires qui permettent de simplifier le traitement des WingedEdge lors des opérations sur le mesh.
+
+
+## Scène Unity
+
+La scène Unity contient 6 objets :
+
+- Box
+- Chips
+- Regular Polygon
+- PacMan
+- Tree
+- Helical Tube
+
+Tous les objets sont présents sous 4 formes : d'abord originale, puis subdivisée 1, 2, et 3 fois par l'algorithme de Catmull Clark.
+
+
+## Démo interactive
+
+La scène contient également un objet, visible sur la gauche des autres, sélectionné par défaut au lancement de la scène. Vous pouvez via l'éditeur vous amusez à lui appliquer différents mesh au runtime, et jouer avec les différents paramètres qui se trouvent dans le MeshCustomizer. 
+
+
+## Répartition des tâches
+
+Toutes les tâches ont été réalisées en équipe afin de mettre à profit les capacités cérébrales de chacun, que ce soit pendant les séances de TP en présentiel mais également lors des séances de TP en distanciel grâce à Discord et au partage d'écran.
